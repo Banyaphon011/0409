@@ -7,12 +7,16 @@ function App() {
   const [textSize, setTextSize] = useState(20);
   const [textColor, setTextColor] = useState('#ffffff');
   const [textPosition, setTextPosition] = useState('top-left');
+  const [grayscale, setGrayscale] = useState(0);
+  const [brightness, setBrightness] = useState(100);
 
   const [submittedImageUrl, setSubmittedImageUrl] = useState('');
   const [submittedText, setSubmittedText] = useState('');
   const [submittedTextSize, setSubmittedTextSize] = useState(20);
   const [submittedTextColor, setSubmittedTextColor] = useState('#ffffff');
   const [submittedTextPosition, setSubmittedTextPosition] = useState('top-left');
+  const [submittedGrayscale, setSubmittedGrayscale] = useState(0);
+  const [submittedBrightness, setSubmittedBrightness] = useState(100);
 
   const canvasRef = useRef(null);
 
@@ -30,6 +34,8 @@ function App() {
     setSubmittedTextSize(textSize);
     setSubmittedTextColor(textColor);
     setSubmittedTextPosition(textPosition);
+    setSubmittedGrayscale(grayscale);
+    setSubmittedBrightness(brightness);
   };
 
   const handleDownload = () => {
@@ -42,7 +48,10 @@ function App() {
     img.onload = () => {
       canvas.width = img.width;
       canvas.height = img.height;
+
+      ctx.filter = `grayscale(${submittedGrayscale}%) brightness(${submittedBrightness}%)`;
       ctx.drawImage(img, 0, 0);
+      ctx.filter = 'none';
 
       ctx.fillStyle = submittedTextColor;
       const scaleFactor = img.width / 500;
@@ -113,13 +122,30 @@ function App() {
             </select>
           </label>
         </div>
+        <div>
+          <label>
+            Grayscale ({grayscale}%):
+            <input type="range" min="0" max="100" value={grayscale} onChange={(e) => setGrayscale(e.target.value)} />
+          </label>
+        </div>
+        <div>
+          <label>
+            Brightness ({brightness}%):
+            <input type="range" min="0" max="200" value={brightness} onChange={(e) => setBrightness(e.target.value)} />
+          </label>
+        </div>
         <button type="submit">Generate Meme</button>
       </form>
 
       {submittedImageUrl && (
         <div>
           <div className="image-container">
-            <img src={submittedImageUrl} alt="Meme" className="watermarked-image" />
+            <img
+              src={submittedImageUrl}
+              alt="Meme"
+              className="watermarked-image"
+              style={{ filter: `grayscale(${submittedGrayscale}%) brightness(${submittedBrightness}%)` }}
+            />
             <div
               className={`watermark-text ${submittedTextPosition}`}
               style={{ color: submittedTextColor, fontSize: `${submittedTextSize}px` }}
