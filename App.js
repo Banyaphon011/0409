@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
   const [imageFile, setImageFile] = useState(null);
-  const [watermarkText, setWatermarkText] = useState('');
+  const [watermarkText, setWatermarkText] = useState(() => {
+    return localStorage.getItem('savedMemeText') || '';
+  });
   const [textSize, setTextSize] = useState(20);
   const [textColor, setTextColor] = useState('#ffffff');
   const [textPosition, setTextPosition] = useState('top-left');
@@ -21,6 +23,10 @@ function App() {
   const [submittedEmoji, setSubmittedEmoji] = useState('');
 
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem('savedMemeText', watermarkText);
+  }, [watermarkText]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
