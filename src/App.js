@@ -2,27 +2,32 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 function App() {
-  const [imageFile, setImageFile] = useState(null);
-  const [watermarkText, setWatermarkText] = useState(() => {
-    return localStorage.getItem('savedMemeText') || '';
-  });
-  const [textSize, setTextSize] = useState(20);
+  const [imageFile, setImageFile] = useState('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800');
+  const [watermarkText, setWatermarkText] = useState(() => localStorage.getItem('savedMemeText') || 'PHUKET');
+  const [textSize, setTextSize] = useState(32);
   const [textColor, setTextColor] = useState('#ffffff');
-  const [textPosition, setTextPosition] = useState('top-left');
+  const [textPosition, setTextPosition] = useState('center');
   const [grayscale, setGrayscale] = useState(0);
   const [brightness, setBrightness] = useState(100);
   const [selectedEmoji, setSelectedEmoji] = useState('🔥');
 
-  const [submittedImageUrl, setSubmittedImageUrl] = useState('');
-  const [submittedText, setSubmittedText] = useState('');
-  const [submittedTextSize, setSubmittedTextSize] = useState(20);
+  const [submittedImageUrl, setSubmittedImageUrl] = useState('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800');
+  const [submittedText, setSubmittedText] = useState('PHUKET');
+  const [submittedTextSize, setSubmittedTextSize] = useState(32);
   const [submittedTextColor, setSubmittedTextColor] = useState('#ffffff');
-  const [submittedTextPosition, setSubmittedTextPosition] = useState('top-left');
+  const [submittedTextPosition, setSubmittedTextPosition] = useState('center');
   const [submittedGrayscale, setSubmittedGrayscale] = useState(0);
   const [submittedBrightness, setSubmittedBrightness] = useState(100);
-  const [submittedEmoji, setSubmittedEmoji] = useState('');
+  const [submittedEmoji, setSubmittedEmoji] = useState('🔥');
 
   const canvasRef = useRef(null);
+
+  const builtInPresets = [
+    { name: 'Beach', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500' },
+    { name: 'Island', url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500' },
+    { name: 'Mountain', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500' },
+    { name: 'Scenery', url: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=500' }
+  ];
 
   useEffect(() => {
     localStorage.setItem('savedMemeText', watermarkText);
@@ -65,7 +70,7 @@ function App() {
       ctx.fillStyle = submittedTextColor;
       const scaleFactor = img.width / 500;
       const computedSize = submittedTextSize * scaleFactor;
-      ctx.font = `${computedSize}px sans-serif`;
+      ctx.font = `800 ${computedSize}px sans-serif`;
 
       let x = 20;
       let y = computedSize + 20;
@@ -85,8 +90,8 @@ function App() {
       ctx.fillText(submittedText, x, y);
 
       if (submittedEmoji) {
-        ctx.font = `${computedSize * 1.5}px sans-serif`;
-        ctx.fillText(submittedEmoji, img.width - (computedSize * 2), img.height - 20);
+        ctx.font = `${computedSize * 1.2}px sans-serif`;
+        ctx.fillText(submittedEmoji, img.width - (computedSize * 1.5), img.height - 20);
       }
 
       const link = document.createElement('a');
@@ -98,96 +103,122 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Meme Generator</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>
-            Upload Image:
-            <input type="file" accept="image/*" onChange={handleImageChange} required />
-          </label>
+      <nav className="navbar">
+        <div className="brand-logo">
+          📍 Meme<span>Studio</span>
         </div>
-        <div>
-          <label>
-            Meme Text:
-            <input type="text" value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} required />
-          </label>
-        </div>
-        <div>
-          <label>
-            Text Size:
-            <input type="number" value={textSize} onChange={(e) => setTextSize(e.target.value)} min="10" max="100" />
-          </label>
-        </div>
-        <div>
-          <label>
-            Text Color:
-            <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Text Position:
-            <select value={textPosition} onChange={(e) => setTextPosition(e.target.value)}>
-              <option value="top-left">Top Left</option>
-              <option value="top-right">Top Right</option>
-              <option value="bottom-left">Bottom Left</option>
-              <option value="bottom-right">Bottom Right</option>
-              <option value="center">Center</option>
-            </select>
-          </label>
-        </div>
-        <div>
-          <label>
-            Grayscale ({grayscale}%):
-            <input type="range" min="0" max="100" value={grayscale} onChange={(e) => setGrayscale(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Brightness ({brightness}%):
-            <input type="range" min="0" max="200" value={brightness} onChange={(e) => setBrightness(e.target.value)} />
-          </label>
-        </div>
-        <div>
-          <label>
-            Sticker Emoji:
-            <select value={selectedEmoji} onChange={(e) => setSelectedEmoji(e.target.value)}>
-              <option value="🔥">🔥 Fire</option>
-              <option value="😂">😂 Laughing</option>
-              <option value="😎">😎 Cool</option>
-              <option value="❤️">❤️ Heart</option>
-            </select>
-          </label>
-        </div>
-        <button type="submit">Generate Meme</button>
-      </form>
+        <ul className="nav-links">
+          <li>Home</li>
+          <li>Presets</li>
+          <li>Editor</li>
+        </ul>
+      </nav>
 
-      {submittedImageUrl && (
-        <div>
-          <div className="image-container">
-            <img
-              src={submittedImageUrl}
-              alt="Meme"
-              className="watermarked-image"
-              style={{ filter: `grayscale(${submittedGrayscale}%) brightness(${submittedBrightness}%)` }}
-            />
-            <div
-              className={`watermark-text ${submittedTextPosition}`}
-              style={{ color: submittedTextColor, fontSize: `${submittedTextSize}px` }}
-            >
-              {submittedText}
-            </div>
-            {submittedEmoji && (
-              <div className="emoji-overlay">
-                {submittedEmoji}
+      <div className="main-layout">
+        <div className="control-card">
+          <div className="card-title">Meme Controls</div>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Preset Templates</label>
+              <div className="preset-grid">
+                {builtInPresets.map((preset, idx) => (
+                  <div
+                    key={idx}
+                    className="preset-card"
+                    onClick={() => setImageFile(preset.url)}
+                  >
+                    <img src={preset.url} alt={preset.name} />
+                    <span className="preset-title">{preset.name}</span>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-          <div>
-            <button onClick={handleDownload}>Download Meme</button>
-          </div>
+            </div>
+
+            <div className="form-group">
+              <label>Custom Image Upload</label>
+              <input className="form-control" type="file" accept="image/*" onChange={handleImageChange} />
+            </div>
+
+            <div className="form-group">
+              <label>Text Content</label>
+              <input className="form-control" type="text" value={watermarkText} onChange={(e) => setWatermarkText(e.target.value)} required />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Text Size (px)</label>
+                <input className="form-control" type="number" value={textSize} onChange={(e) => setTextSize(e.target.value)} min="10" max="100" />
+              </div>
+              <div className="form-group">
+                <label>Text Color</label>
+                <input className="form-control" type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} style={{ height: '42px', padding: '2px' }} />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Position</label>
+                <select className="form-control" value={textPosition} onChange={(e) => setTextPosition(e.target.value)}>
+                  <option value="top-left">Top Left</option>
+                  <option value="top-right">Top Right</option>
+                  <option value="bottom-left">Bottom Left</option>
+                  <option value="bottom-right">Bottom Right</option>
+                  <option value="center">Center</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Sticker</label>
+                <select className="form-control" value={selectedEmoji} onChange={(e) => setSelectedEmoji(e.target.value)}>
+                  <option value="🔥">🔥 Fire</option>
+                  <option value="😂">😂 Laugh</option>
+                  <option value="😎">😎 Cool</option>
+                  <option value="❤️">❤️ Heart</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label>Grayscale: {grayscale}%</label>
+                <input type="range" min="0" max="100" value={grayscale} onChange={(e) => setGrayscale(e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Brightness: {brightness}%</label>
+                <input type="range" min="0" max="200" value={brightness} onChange={(e) => setBrightness(e.target.value)} />
+              </div>
+            </div>
+
+            <button type="submit" className="btn-primary">Generate Meme</button>
+          </form>
         </div>
-      )}
+
+        <div className="preview-container">
+          {submittedImageUrl && (
+            <div style={{ width: '100%' }}>
+              <div className="image-container">
+                <img
+                  src={submittedImageUrl}
+                  alt="Meme"
+                  className="watermarked-image"
+                  style={{ filter: `grayscale(${submittedGrayscale}%) brightness(${submittedBrightness}%)` }}
+                />
+                <div
+                  className={`watermark-text ${submittedTextPosition}`}
+                  style={{ color: submittedTextColor, fontSize: `${submittedTextSize}px` }}
+                >
+                  {submittedText}
+                </div>
+                {submittedEmoji && (
+                  <div className="emoji-overlay">
+                    {submittedEmoji}
+                  </div>
+                )}
+              </div>
+              <button onClick={handleDownload} className="btn-secondary">Download Image</button>
+            </div>
+          )}
+        </div>
+      </div>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
   );
