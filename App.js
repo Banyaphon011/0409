@@ -9,6 +9,7 @@ function App() {
   const [textPosition, setTextPosition] = useState('top-left');
   const [grayscale, setGrayscale] = useState(0);
   const [brightness, setBrightness] = useState(100);
+  const [selectedEmoji, setSelectedEmoji] = useState('🔥');
 
   const [submittedImageUrl, setSubmittedImageUrl] = useState('');
   const [submittedText, setSubmittedText] = useState('');
@@ -17,6 +18,7 @@ function App() {
   const [submittedTextPosition, setSubmittedTextPosition] = useState('top-left');
   const [submittedGrayscale, setSubmittedGrayscale] = useState(0);
   const [submittedBrightness, setSubmittedBrightness] = useState(100);
+  const [submittedEmoji, setSubmittedEmoji] = useState('');
 
   const canvasRef = useRef(null);
 
@@ -36,6 +38,7 @@ function App() {
     setSubmittedTextPosition(textPosition);
     setSubmittedGrayscale(grayscale);
     setSubmittedBrightness(brightness);
+    setSubmittedEmoji(selectedEmoji);
   };
 
   const handleDownload = () => {
@@ -74,6 +77,11 @@ function App() {
       }
 
       ctx.fillText(submittedText, x, y);
+
+      if (submittedEmoji) {
+        ctx.font = `${computedSize * 1.5}px sans-serif`;
+        ctx.fillText(submittedEmoji, img.width - (computedSize * 2), img.height - 20);
+      }
 
       const link = document.createElement('a');
       link.download = 'meme.png';
@@ -134,6 +142,17 @@ function App() {
             <input type="range" min="0" max="200" value={brightness} onChange={(e) => setBrightness(e.target.value)} />
           </label>
         </div>
+        <div>
+          <label>
+            Sticker Emoji:
+            <select value={selectedEmoji} onChange={(e) => setSelectedEmoji(e.target.value)}>
+              <option value="🔥">🔥 Fire</option>
+              <option value="😂">😂 Laughing</option>
+              <option value="😎">😎 Cool</option>
+              <option value="❤️">❤️ Heart</option>
+            </select>
+          </label>
+        </div>
         <button type="submit">Generate Meme</button>
       </form>
 
@@ -152,6 +171,11 @@ function App() {
             >
               {submittedText}
             </div>
+            {submittedEmoji && (
+              <div className="emoji-overlay">
+                {submittedEmoji}
+              </div>
+            )}
           </div>
           <div>
             <button onClick={handleDownload}>Download Meme</button>

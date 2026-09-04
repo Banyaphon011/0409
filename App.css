@@ -45,3 +45,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.emoji-overlay {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 32px;
+}
