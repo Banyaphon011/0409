@@ -1,0 +1,47 @@
+.App {
+  text-align: center;
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.watermarked-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.watermark-text {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px;
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+.watermark-text.top-left {
+  top: 10px;
+  left: 10px;
+}
+
+.watermark-text.top-right {
+  top: 10px;
+  right: 10px;
+}
+
+.watermark-text.bottom-left {
+  bottom: 10px;
+  left: 10px;
+}
+
+.watermark-text.bottom-right {
+  bottom: 10px;
+  right: 10px;
+}
+
+.watermark-text.center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
